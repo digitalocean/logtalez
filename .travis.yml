@@ -10,5 +10,5 @@ before_install:
         - git clone git://github.com/zeromq/czmq.git
         - ( cd czmq; ./autogen.sh; ./configure; make check; sudo make install; sudo ldconfig )
 script:
-        - go get -t -v ./...
+        - go get github.com/zeromq/goczmq
         - go test -v .
