@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.internal.digitalocean.com/bknox/logtalez"
+	"github.com/digitalocean/logtalez"
 )
 
 func main() {
