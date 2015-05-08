@@ -43,7 +43,7 @@ RUN cd /go/src/github.com/digitalocean/logtalez \
   && go build -o /bin/logtalez \
   && rm -rf /go
 
-VOLUME ["/home/bknox/.curve"]
+VOLUME ["/etc/curve.d"]
 ENTRYPOINT ["/bin/logtalez"]
 
 
