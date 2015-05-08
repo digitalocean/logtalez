@@ -177,3 +177,56 @@ if $parsesuccess == "OK" then {
 * [jq](https://stedolan.github.io/jq/) JSON processor
 * [humanlog](https://github.com/aybabtme/humanlog) "Logs for humans to read."
 * Anything that can read stdout!
+
+## API Documentation
+
+# logtalez
+--
+    import "github.com/digitalocean/logtalez"
+
+
+## Usage
+
+#### func  MakeEndpointList
+
+```go
+func MakeEndpointList(endpoints string) []string
+```
+MakeEndpointList is a convenience function that, given a list of comma delimited
+zeromq endpoints, returns a slice containing the endpoints.
+
+#### func  MakeTopicList
+
+```go
+func MakeTopicList(hosts, programs string) []string
+```
+MakeTopicList is a convenience function that, given a string of comma delimited
+hosts and a string of comma delimited program name tags, generates a slice of
+subscription topics.
+
+#### type LogTalez
+
+```go
+type LogTalez struct {
+	TailChan <-chan [][]byte
+}
+```
+
+LogTalez holds the context for a running LogTalez instance
+
+#### func  New
+
+```go
+func New(endpoints, topics []string, serverCertPath, clientCertPath string) (*LogTalez, error)
+```
+New returns a new running LogTalez instance given a slice of endpoints, a slice
+of topics, and the path to a CURVE server public cert and CURVE server client
+cert. The TailChan member is a channel that returns [][]byte messages from
+ZeroMQ.
+
+#### func (*LogTalez) Destroy
+
+```go
+func (lt *LogTalez) Destroy()
+```
+Destroy gracefully shuts down a running LogTalez instance

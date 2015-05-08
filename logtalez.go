@@ -8,6 +8,7 @@ import (
 	"github.com/zeromq/goczmq"
 )
 
+// LogTalez holds the context for a running LogTalez instance
 type LogTalez struct {
 	topics     []string
 	endpoints  []string
@@ -18,6 +19,9 @@ type LogTalez struct {
 	TailChan   <-chan [][]byte
 }
 
+// MakeTopicList is a convenience function that, given a string of comma delimited
+// hosts and a string of comma delimited program name tags, generates a slice of
+// subscription topics.
 func MakeTopicList(hosts, programs string) []string {
 	topicList := make([]string, 0)
 
@@ -38,6 +42,8 @@ func MakeTopicList(hosts, programs string) []string {
 	return topicList
 }
 
+// MakeEndpointList is a convenience function that, given a list of comma delimited
+// zeromq endpoints, returns a slice containing the endpoints.
 func MakeEndpointList(endpoints string) []string {
 	endpointList := make([]string, 0)
 
@@ -48,6 +54,10 @@ func MakeEndpointList(endpoints string) []string {
 	return endpointList
 }
 
+// New returns a new running LogTalez instance given a slice of endpoints,
+// a slice of topics, and the path to a CURVE server public cert and CURVE
+// server client cert.  The TailChan member is a channel that returns
+// [][]byte messages from ZeroMQ.
 func New(endpoints, topics []string, serverCertPath, clientCertPath string) (*LogTalez, error) {
 
 	lt := &LogTalez{
@@ -90,6 +100,7 @@ func New(endpoints, topics []string, serverCertPath, clientCertPath string) (*Lo
 	return lt, nil
 }
 
+// Destroy gracefully shuts down a running LogTalez instance
 func (lt *LogTalez) Destroy() {
 	for _, t := range lt.topics {
 		lt.sock.SetUnsubscribe(t)
