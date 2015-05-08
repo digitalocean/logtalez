@@ -2,6 +2,7 @@ package logtalez
 
 import (
 	"testing"
+	"time"
 
 	"github.com/zeromq/goczmq"
 )
@@ -57,8 +58,6 @@ func TestNew(t *testing.T) {
 	defer clientCert.Destroy()
 
 	server := goczmq.NewSock(goczmq.PUB)
-
-	defer server.Destroy()
 	server.SetZapDomain("global")
 
 	serverCert, err := goczmq.NewCertFromFile(servercert)
@@ -88,4 +87,21 @@ func TestNew(t *testing.T) {
 	if string(msg[0]) != "topic1:hello world" {
 		t.Errorf("expected 'topic1:hello world', got '%s'", msg[0])
 	}
+
+	server.SendFrame([]byte("topic2:hello, hello again"), 0)
+
+	msg = <-lt.TailChan
+	if string(msg[0]) != "topic2:hello, hello again" {
+		t.Errorf("expected 'topic2:hello, hello again', got '%s'", msg[0])
+	}
+
+	server.SendFrame([]byte("topic_boring:no one cares"), 0)
+
+	select {
+	case msg := <-lt.TailChan:
+		t.Errorf("should not receive boring msg but got: '%s'", msg)
+	case <-time.After(time.Millisecond * 100):
+	}
+
+	server.Destroy()
 }
