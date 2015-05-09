@@ -203,3 +203,7 @@ if $parsesuccess == "OK" then {
 ## GoDoc
 
 [godoc](https://godoc.org/github.com/digitalocean/logtalez)
+
+## License
+
+This project uses the MPL v2 license, see LICENSE
