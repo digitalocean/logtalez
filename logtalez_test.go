@@ -2,6 +2,7 @@ package logtalez
 
 import (
 	"testing"
+	"time"
 
 	"github.com/zeromq/goczmq"
 )
@@ -87,5 +88,20 @@ func TestNew(t *testing.T) {
 	msg := <-lt.TailChan
 	if string(msg[0]) != "topic1:hello world" {
 		t.Errorf("expected 'topic1:hello world', got '%s'", msg[0])
+	}
+
+	server.SendFrame([]byte("topic2:hello again"), 0)
+
+	msg = <-lt.TailChan
+	if string(msg[0]) != "topic2:hello again" {
+		t.Errorf("expected 'topic2:hello again', got '%s'", msg[0])
+	}
+
+	server.SendFrame([]byte("boring_topic:blah blah blah"), 0)
+
+	select {
+	case msg = <-lt.TailChan:
+		t.Errorf("expected to not receive msg, received: '%s'", msg)
+	case <-time.After(10 * time.Millisecond):
 	}
 }
