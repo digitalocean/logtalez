@@ -154,23 +154,45 @@ if $parsesuccess == "OK" then {
 } 
 ```
 
-## Running Logtalez
+## Usage
 
-### Flags
-* --endpoints - comma delimited list of zeromq syslog outputs to connect to
-* --servercertpath - path to server public cert
-* --clientcertpath - path to client public cert
-* --hosts - comma delimited list of hosts to get realtime logs from
-* --programs - comma delimited list of programs to get realtime logs from
+`````go
+	import "github.com/digitalocean/logtalez"
 
-### Example
-```
-./logtalez --endpoints=tcp://server1:24444,tcp://server2:24444 --servercertpath=/path/to/server_public_cert --clientcertpath=/path/to/client_public_cert --hosts=somehost,anotherhost --programs=nginx,apache
-```
+	func main() {
+		zmqconns := "tcp://127.0.0.1:24444,tcp://example.com:24444"
+		endpoints := logtalez.MakeEndpointList(zmqconns)
 
-### Todo
+		hosts := "host1,host2,host3"
+		programs := "nginx"
+		topics := logtalez.MakeTopicList(hosts, programs)
+
+		serverCert := "/home/me/.curve/server_public_cert"
+		clientCert := "/home/me/.curve/client_public_cert"
+
+		lt, err := logtalez.New(endpoints, topics, serverCert, clientCert)
+		if err != nil {
+			panic(err)
+		}
+
+		sigChan := make(chan os.Signal, 1)
+		signal.Notify(sigChan, os.Interrupt, os.Kill)
+
+		for {
+			select {
+			case msg := <-lt.TailChan:
+				logline := strings.Split(string(msg[0]), "@cee:")[1]
+				fmt.Println(logline)
+			case <-sigChan:
+				lt.Destroy()
+				os.Exit(0)
+			}
+		}
+	}
+`````
+
+## Todo
 * Support for custom topic formats and custom json delimiters
-* Dockerized build for ease of distribution
 * Dockerized rsyslog "appliance" with support baked in
 
 ## Tools That Work Well with Logtalez
@@ -178,55 +200,6 @@ if $parsesuccess == "OK" then {
 * [humanlog](https://github.com/aybabtme/humanlog) "Logs for humans to read."
 * Anything that can read stdout!
 
-## API Documentation
+## GoDoc
 
-# logtalez
---
-    import "github.com/digitalocean/logtalez"
-
-
-## Usage
-
-#### func  MakeEndpointList
-
-```go
-func MakeEndpointList(endpoints string) []string
-```
-MakeEndpointList is a convenience function that, given a list of comma delimited
-zeromq endpoints, returns a slice containing the endpoints.
-
-#### func  MakeTopicList
-
-```go
-func MakeTopicList(hosts, programs string) []string
-```
-MakeTopicList is a convenience function that, given a string of comma delimited
-hosts and a string of comma delimited program name tags, generates a slice of
-subscription topics.
-
-#### type LogTalez
-
-```go
-type LogTalez struct {
-	TailChan <-chan [][]byte
-}
-```
-
-LogTalez holds the context for a running LogTalez instance
-
-#### func  New
-
-```go
-func New(endpoints, topics []string, serverCertPath, clientCertPath string) (*LogTalez, error)
-```
-New returns a new running LogTalez instance given a slice of endpoints, a slice
-of topics, and the path to a CURVE server public cert and CURVE server client
-cert. The TailChan member is a channel that returns [][]byte messages from
-ZeroMQ.
-
-#### func (*LogTalez) Destroy
-
-```go
-func (lt *LogTalez) Destroy()
-```
-Destroy gracefully shuts down a running LogTalez instance
+[godoc](https://godoc.org/github.com/digitalocean/logtalez)
