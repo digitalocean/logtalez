@@ -1,23 +1,19 @@
 # logtalez [![Build Status](https://travis-ci.org/digitalocean/logtalez.svg?branch=master)](https://travis-ci.org/digitalocean/logtalez) [![Doc Status](https://godoc.org/github.com/digitalocean/logtalez?status.png)](https://godoc.org/github.com/digitalocean/logtalez)
 
-# What Is This?
-logtalez, oo-ooo
+# Problem Statement
+We want to tail logs from remote servers as conveniently as if they were local, in a safe and secure manner.
 
-## Overview
-logtalez is a minimal command line client (and API) for retrieving log streams from the
-rsyslog logging daemon over zeromq. 
+# Solution
+logtalez - a library and command line client for subscribing to log streams from rsyslog using the [omczmq](https://github.com/rsyslog/rsyslog/tree/master/contrib/omczmq) output plugin..
 
-An rsyslog config emits logs over a zeromq publish socket, dynamically
-constructing topics from the host and program name that generated the log.
+* Create dynamic topics using rsyslog's [parsing](http://www.rsyslog.com/doc/messageparser.html) and [template](http://www.rsyslog.com/doc/v8-stable/configuration/templates.html) features.
+* Subscribe to topics to receive the logs you want.
+* Publisher side filtering keeps bandwidth usage low.
+* Brokerless design keeps operation simple.
+* Ephemeral streaming keeps things light weight.
+* [CurveZMQ](http://curvezmq.org/) authentication and encryption keeps things secure.
 
-The command line client can be used to subscribe to host / program name 
-combinations and the logs are fed to stdout, where you can interact with 
-them using whatever tools you wish.
-
-Access to the zeromq socket is controlled via encryption certs, and all 
-traffic between the server and client is encrypted.
-
-# How Do I Build and Use This?
+# Installation
 ## Dependencies
 ### [libsodium](https://github.com/jedisct1/libsodium)
 Version: 1.0.2 (or newer)
@@ -153,7 +149,7 @@ if $parsesuccess == "OK" then {
 } 
 ```
 
-## Usage
+# Usage
 
 `````go
 	import "github.com/digitalocean/logtalez"
@@ -190,19 +186,15 @@ if $parsesuccess == "OK" then {
 	}
 `````
 
-## Todo
-* Support for custom topic formats and custom json delimiters
-* Dockerized rsyslog "appliance" with support baked in
-
-## Tools That Work Well with Logtalez
+# Tools That Work Well with Logtalez
 * [jq](https://stedolan.github.io/jq/) JSON processor
 * [humanlog](https://github.com/aybabtme/humanlog) "Logs for humans to read."
 * Anything that can read stdout!
 
-## GoDoc
+# GoDoc
 
 [godoc](https://godoc.org/github.com/digitalocean/logtalez)
 
-## License
+# License
 
 This project uses the MPL v2 license, see LICENSE
