@@ -1,9 +1,8 @@
-logtalez
-========
-
-logtalez, oo-ooo
+# logtalez [![Build Status](https://travis-ci.org/digitalocean/logtalez.svg?branch=master)](https://travis-ci.org/digitalocean/logtalez) [![Doc Status](https://godoc.org/github.com/digitalocean/logtalez?status.png)](https://godoc.org/github.com/digitalocean/logtalez)
 
 # What Is This?
+logtalez, oo-ooo
+
 ## Overview
 logtalez is a minimal command line client (and API) for retrieving log streams from the
 rsyslog logging daemon over zeromq. 
