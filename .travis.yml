@@ -3,7 +3,7 @@ language: go
 go:
         - 1.4
 
-before_install:
+install:
         - git clone git://github.com/jedisct1/libsodium.git
         - ( cd libsodium; ./autogen.sh; ./configure; make check; sudo make install; sudo ldconfig )
 
@@ -12,9 +12,8 @@ before_install:
 
         - git clone git://github.com/zeromq/czmq.git
         - ( cd czmq; ./autogen.sh; ./configure; make check; sudo make install; sudo ldconfig )
-
-install:
+        
         - go get github.com/zeromq/goczmq
 
 script:
-        - go test -v .
+        - go test -v ./...
