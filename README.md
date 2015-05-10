@@ -186,15 +186,15 @@ if $parsesuccess == "OK" then {
 	}
 `````
 
-# Tools That Work Well with Logtalez
+## Tools That Work Well with Logtalez
 * [jq](https://stedolan.github.io/jq/) JSON processor
 * [humanlog](https://github.com/aybabtme/humanlog) "Logs for humans to read."
 * Anything that can read stdout!
 
-# GoDoc
+## GoDoc
 
 [godoc](https://godoc.org/github.com/digitalocean/logtalez)
 
-# License
+## License
 
 This project uses the MPL v2 license, see LICENSE
