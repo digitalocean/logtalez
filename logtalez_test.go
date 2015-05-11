@@ -128,6 +128,7 @@ func ExampleLogTalez() {
 	if err != nil {
 		panic(lt)
 	}
+	defer lt.Destroy()
 
 	// get your log stream from the TailChan channel
 	select {
