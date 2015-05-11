@@ -1,6 +1,7 @@
 package logtalez
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -104,4 +105,42 @@ func TestNew(t *testing.T) {
 		t.Errorf("expected to not receive msg, received: '%s'", msg)
 	case <-time.After(10 * time.Millisecond):
 	}
+}
+
+func ExampleLogTalez() {
+
+	// endpoints is a slice of rsyslog zeromq endpoints.
+	endpoints := []string{"inproc://test1"}
+
+	// topics should match topics created in your rsyslog output template.
+	topics := []string{"topic1", "topic2"}
+
+	// path to the server public crypto cert
+	servercert := "./example_certs/example_curve_server_cert"
+
+	// path to client public cert - the client public cert
+	// should reside in the same parent directory
+	clientcert := "./example_certs/example_curve_client_cert"
+
+	// create a new logtalez instance. it will start receiving
+	// logs in a goroutine right away.
+	lt, err := New(endpoints, topics, servercert, clientcert)
+	if err != nil {
+		panic(lt)
+	}
+	defer lt.Destroy()
+
+	// get your log stream from the TailChan channel
+	select {
+	case msg := <-lt.TailChan:
+
+		// unlike RFC3164, the log line does not terminate with a '\n'.
+		// line termination is handled by zeromq framing.
+		fmt.Println(msg)
+
+	// timeout so the example doesn't hang since we are not
+	// actually connected to anything.
+	case <-time.After(1 * time.Millisecond):
+	}
+
 }
