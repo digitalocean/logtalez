@@ -77,7 +77,7 @@ func New(endpoints, topics []string, serverCertPath, clientCertPath string) (*Lo
 		return lt, err
 	}
 
-	lt.sock = goczmq.NewSock(goczmq.SUB)
+	lt.sock = goczmq.NewSock(goczmq.Sub)
 
 	lt.clientCert.Apply(lt.sock)
 	lt.sock.SetCurveServerkey(lt.serverCert.PublicText())

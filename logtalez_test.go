@@ -58,7 +58,7 @@ func TestNew(t *testing.T) {
 	}
 	defer clientCert.Destroy()
 
-	server := goczmq.NewSock(goczmq.PUB)
+	server := goczmq.NewSock(goczmq.Pub)
 
 	defer server.Destroy()
 	server.SetZapDomain("global")
