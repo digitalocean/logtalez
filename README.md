@@ -1,5 +1,7 @@
 # logtalez [![Build Status](https://travis-ci.org/digitalocean/logtalez.svg?branch=master)](https://travis-ci.org/digitalocean/logtalez) [![Doc Status](https://godoc.org/github.com/digitalocean/logtalez?status.png)](https://godoc.org/github.com/digitalocean/logtalez)
 
+![logtalez](https://i.imgur.com/DFZxsBi.png)
+
 ## Problem Statement
 We want to tail logs from remote servers as conveniently as if they were local, in a safe and secure manner.
 
