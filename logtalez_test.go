@@ -1,9 +1,8 @@
 package logtalez
 
 import (
-	"fmt"
+	"io"
 	"testing"
-	"time"
 
 	"github.com/zeromq/goczmq"
 )
@@ -86,61 +85,25 @@ func TestNew(t *testing.T) {
 
 	server.SendFrame([]byte("topic1:hello world"), 0)
 
-	msg := <-lt.TailChan
-	if string(msg[0]) != "topic1:hello world" {
-		t.Errorf("expected 'topic1:hello world', got '%s'", msg[0])
+	buf := make([]byte, 65536)
+
+	n, err := lt.Read(buf)
+	if err != io.EOF {
+		t.Errorf("expected %s, got %s", io.EOF, err)
+	}
+
+	if string(buf[:n]) != "topic1:hello world" {
+		t.Errorf("expected 'topic1:hello world', got '%s'", buf[:n])
 	}
 
 	server.SendFrame([]byte("topic2:hello again"), 0)
 
-	msg = <-lt.TailChan
-	if string(msg[0]) != "topic2:hello again" {
-		t.Errorf("expected 'topic2:hello again', got '%s'", msg[0])
+	n, err = lt.Read(buf)
+	if err != io.EOF {
+		t.Errorf("expected %s, got %s", io.EOF, err)
 	}
 
-	server.SendFrame([]byte("boring_topic:blah blah blah"), 0)
-
-	select {
-	case msg = <-lt.TailChan:
-		t.Errorf("expected to not receive msg, received: '%s'", msg)
-	case <-time.After(10 * time.Millisecond):
+	if string(buf[:n]) != "topic2:hello again" {
+		t.Errorf("expected 'topic2:hello again', got '%s'", buf[:n])
 	}
-}
-
-func ExampleLogTalez() {
-
-	// endpoints is a slice of rsyslog zeromq endpoints.
-	endpoints := []string{"inproc://test1"}
-
-	// topics should match topics created in your rsyslog output template.
-	topics := []string{"topic1", "topic2"}
-
-	// path to the server public crypto cert
-	servercert := "./example_certs/example_curve_server_cert"
-
-	// path to client public cert - the client public cert
-	// should reside in the same parent directory
-	clientcert := "./example_certs/example_curve_client_cert"
-
-	// create a new logtalez instance. it will start receiving
-	// logs in a goroutine right away.
-	lt, err := New(endpoints, topics, servercert, clientcert)
-	if err != nil {
-		panic(lt)
-	}
-	defer lt.Destroy()
-
-	// get your log stream from the TailChan channel
-	select {
-	case msg := <-lt.TailChan:
-
-		// unlike RFC3164, the log line does not terminate with a '\n'.
-		// line termination is handled by zeromq framing.
-		fmt.Println(msg)
-
-	// timeout so the example doesn't hang since we are not
-	// actually connected to anything.
-	case <-time.After(1 * time.Millisecond):
-	}
-
 }

@@ -3,11 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"log"
-	"os"
-	"os/signal"
-	"strings"
-	"time"
 
 	"github.com/digitalocean/logtalez"
 )
@@ -41,19 +38,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer lt.Destroy()
 
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt, os.Kill)
-
+	buf := make([]byte, 65560)
 	for {
-		select {
-		case msg := <-lt.TailChan:
-			logline := strings.Split(string(msg[0]), "@cee:")[1]
-			fmt.Println(logline)
-		case <-sigChan:
-			lt.Destroy()
-			time.Sleep(100 * time.Millisecond)
-			os.Exit(0)
+		n, err := lt.Read(buf)
+		if err != nil && err != io.EOF {
+			panic(err)
 		}
+		fmt.Println(string(buf[:n]))
 	}
 }
