@@ -40,7 +40,7 @@ func main() {
 	}
 	defer lt.Destroy()
 
-	buf := make([]byte, 65560)
+	buf := make([]byte, 65536)
 	for {
 		n, err := lt.Read(buf)
 		if err != nil && err != io.EOF {
