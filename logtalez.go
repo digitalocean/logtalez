@@ -3,7 +3,6 @@ package logtalez
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/zeromq/goczmq"
 )
@@ -15,8 +14,6 @@ type LogTalez struct {
 	serverCert *goczmq.Cert
 	clientCert *goczmq.Cert
 	sock       *goczmq.Sock
-	channeler  *goczmq.Channeler
-	TailChan   <-chan [][]byte
 }
 
 // MakeTopicList is a convenience function that, given a string of comma delimited
@@ -56,8 +53,8 @@ func MakeEndpointList(endpoints string) []string {
 
 // New returns a new running LogTalez instance given a slice of endpoints,
 // a slice of topics, and the path to a CURVE server public cert and CURVE
-// server client cert.  The TailChan member is a channel that returns
-// [][]byte messages from ZeroMQ.
+// server client cert. Logtalez exposes an io.Reader compatible interface
+// for reading streaming logs.
 func New(endpoints, topics []string, serverCertPath, clientCertPath string) (*LogTalez, error) {
 
 	lt := &LogTalez{
@@ -95,26 +92,15 @@ func New(endpoints, topics []string, serverCertPath, clientCertPath string) (*Lo
 		lt.endpoints = append(lt.endpoints, e)
 	}
 
-	lt.channeler = goczmq.NewChanneler(lt.sock, false)
-	lt.TailChan = lt.channeler.RecvChan
 	return lt, nil
+}
+
+func (lt *LogTalez) Read(p []byte) (int, error) {
+	return lt.sock.Read(p)
 }
 
 // Destroy gracefully shuts down a running LogTalez instance
 func (lt *LogTalez) Destroy() {
-	for _, t := range lt.topics {
-		lt.sock.SetUnsubscribe(t)
-	}
-
-	for _, e := range lt.endpoints {
-		err := lt.sock.Disconnect(e)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	time.Sleep(100 * time.Millisecond)
-
 	lt.serverCert.Destroy()
 	lt.clientCert.Destroy()
 	lt.sock.Destroy()
