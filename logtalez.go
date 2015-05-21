@@ -53,8 +53,8 @@ func MakeEndpointList(endpoints string) []string {
 
 // New returns a new running LogTalez instance given a slice of endpoints,
 // a slice of topics, and the path to a CURVE server public cert and CURVE
-// server client cert.  The TailChan member is a channel that returns
-// [][]byte messages from ZeroMQ.
+// server client cert. Logtalez exposes an io.Reader compatible interface
+// for reading streaming logs.
 func New(endpoints, topics []string, serverCertPath, clientCertPath string) (*LogTalez, error) {
 
 	lt := &LogTalez{
