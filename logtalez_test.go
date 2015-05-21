@@ -1,7 +1,9 @@
 package logtalez
 
 import (
+	"fmt"
 	"io"
+	"log"
 	"testing"
 
 	"github.com/zeromq/goczmq"
@@ -105,5 +107,39 @@ func TestNew(t *testing.T) {
 
 	if string(buf[:n]) != "topic2:hello again" {
 		t.Errorf("expected 'topic2:hello again', got '%s'", buf[:n])
+	}
+}
+
+func ExampleLogTalez() {
+	// endpoints is a list of zeromq rsyslog endpoints to attach to.
+	endpoints := []string{"tcp://host1.example.com:24444,tcp://host2.example.com:24444"}
+
+	// topics is a list of topics to subscribe to.
+	topics := []string{"host1.ssh,host1.nginx,host2.ssh,host2.kernel"}
+
+	// path to the server public certificate
+	serverCertPath := "/home/example_user/.curve/server_cert"
+
+	// path to the client public certificate
+	clientCertPath := "/home/example_user/.curve/my_cert"
+
+	// create a new logtalez instance
+	lt, err := New(endpoints, topics, serverCertPath, clientCertPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer lt.Destroy()
+
+	// logtalez exposes an io.Reader interface.  so, here we create a
+	// buffer and read log lines.  currently logtalez returns one log
+	// line per call to Read.
+	buf := make([]byte, 65536)
+	for {
+		n, err := lt.Read(buf)
+		if err != nil && err != io.EOF {
+			panic(err)
+		}
+
+		fmt.Println(string(buf[:n]))
 	}
 }
