@@ -36,9 +36,11 @@ Version: commit 6b4d9bca0c31fc8131749396fd996d17761c999f or newer
 ZeroMQ is an embeddable [ZMTP](http://rfc.zeromq.org/spec:23) protocol library.
 
 ```
-git clone git@github.com:zeromq/libzmq.git
-cd libzmq
-./autogen.sh; ./configure --with-libsodium; make; make check
+wget http://download.zeromq.org/zeromq-4.1.2.tar.gz
+md5sum zeromq-4.1.2.tar.gz
+159c0c56a895472f02668e692d122685  zeromq-4.1.2.tar.gz
+cd zeromq-4.1.2
+./configure --with-libsodium; make; make check
 sudo make install
 sudo ldconfig
 ```
@@ -49,11 +51,13 @@ Version: commit 7997d86bcac7a916535338e71f2d826a9913df28 or newer
 CZMQ is a high-level C binding for ZeroMQ.  It provides an API for various services on top of ZeroMQ such as authentication, actors, service discovery, etc.
 
 ```
-git clone git@github.com:zeromq/czmq.git
-cd czmq
-./autogen.sh; ./configure; make; make check
+wget https://github.com/zeromq/czmq/archive/v3.0.2.tar.gz -O czmq-3.0.2.tar.gz
+tar zxvf czmq-3.0.2.tar.gz
+md5sum czmq-3.0.2.tar.gz 
+23e9885f7ee3ce88d99d0425f52e9be1  czmq-3.0.2.tar.gz
+cd czmq-3.0.2
+./configure; make; make check
 sudo make install
-sudo ldconfig
 ```
 
 #### [GoCZMQ](http://https://github.com/zeromq/goczmq)
