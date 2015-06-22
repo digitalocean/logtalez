@@ -90,8 +90,8 @@ func TestNew(t *testing.T) {
 	buf := make([]byte, 65536)
 
 	n, err := lt.Read(buf)
-	if err != io.EOF {
-		t.Errorf("expected %s, got %s", io.EOF, err)
+	if err != nil {
+		t.Errorf("expected nil, got %s", err)
 	}
 
 	if string(buf[:n]) != "topic1:hello world" {
@@ -101,8 +101,8 @@ func TestNew(t *testing.T) {
 	server.SendFrame([]byte("topic2:hello again"), 0)
 
 	n, err = lt.Read(buf)
-	if err != io.EOF {
-		t.Errorf("expected %s, got %s", io.EOF, err)
+	if err != nil {
+		t.Errorf("expected nil, got %s", err)
 	}
 
 	if string(buf[:n]) != "topic2:hello again" {
