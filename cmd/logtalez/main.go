@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 
 	"github.com/digitalocean/logtalez"
 )
@@ -29,6 +30,14 @@ func main() {
 
 	if *clientCertPathPtr == "" {
 		log.Fatal("--clientcertpath is mandatory")
+	}
+
+	if _, err := os.Stat(*serverCertPathPtr); err != nil {
+		log.Fatalf("error reading server certificate %q: %s", *serverCertPathPtr, err)
+	}
+
+	if _, err := os.Stat(*clientCertPathPtr); err != nil {
+		log.Fatalf("error reading client certificate %q: %s", *clientCertPathPtr, err)
 	}
 
 	topicList := logtalez.MakeTopicList(*hostsPtr, *programsPtr)
