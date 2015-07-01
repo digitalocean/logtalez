@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/digitalocean/logtalez"
 )
@@ -17,6 +18,7 @@ func main() {
 	programsPtr := flag.String("programs", "", "comma delimited list of programs to get logs from")
 	serverCertPathPtr := flag.String("servercertpath", "", "path to server public cert")
 	clientCertPathPtr := flag.String("clientcertpath", "", "path to client public cert")
+	jSONPtr := flag.Bool("json", false, "restrict output to valid JSON")
 
 	flag.Parse()
 
@@ -55,6 +57,12 @@ func main() {
 		if err != nil && err != io.EOF {
 			panic(err)
 		}
-		fmt.Println(string(buf[:n]))
+
+		output := string(buf[:n])
+		if *jSONPtr {
+			output = strings.SplitAfterN(output, "@cee:", 2)[1]
+		}
+
+		fmt.Println(output)
 	}
 }
