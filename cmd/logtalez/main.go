@@ -32,12 +32,12 @@ func main() {
 		log.Fatal("--clientcertpath is mandatory")
 	}
 
-	if _, err := os.Stat(*serverCertPathPtr); os.IsNotExist(err) {
-		log.Fatalf("server certificate not found: '%s'", *serverCertPathPtr)
+	if _, err := os.Stat(*serverCertPathPtr); err != nil {
+		log.Fatalf("error reading server certificate %q: %s", *serverCertPathPtr, err)
 	}
 
-	if _, err := os.Stat(*clientCertPathPtr); os.IsNotExist(err) {
-		log.Fatalf("client certificate not found: '%s'", *clientCertPathPtr)
+	if _, err := os.Stat(*clientCertPathPtr); err != nil {
+		log.Fatalf("error reading client certificate %q: %s", *clientCertPathPtr, err)
 	}
 
 	topicList := logtalez.MakeTopicList(*hostsPtr, *programsPtr)
