@@ -23,7 +23,7 @@ func TestMakeTopicList(t *testing.T) {
 
 	for i, expect := range expected {
 		if topics[i] != expect {
-			t.Errorf("expected topic '%s', got '%s'", expect[i], topics[i])
+			t.Errorf("expected topic '%v', got '%v'", expect[i], topics[i])
 		}
 	}
 }
@@ -39,7 +39,7 @@ func TestMakeEndpointList(t *testing.T) {
 
 	for i, expect := range expected {
 		if endpoints[i] != expect {
-			t.Errorf("expected endpoint '%s', got '%s'", expect[i], endpoints[i])
+			t.Errorf("expected endpoint '%v', got '%v'", expect[i], endpoints[i])
 		}
 	}
 }
@@ -82,7 +82,7 @@ func TestNew(t *testing.T) {
 
 	lt, err := New(endpoints, topics, servercert, clientcert)
 	if err != nil {
-		t.Error("NewLogTalez failed: %s", err)
+		t.Errorf("NewLogTalez failed: %s", err)
 	}
 
 	server.SendFrame([]byte("topic1:hello world"), 0)
