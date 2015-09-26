@@ -41,8 +41,15 @@ func main() {
 		log.Fatalf("error reading client certificate %q: %s", *clientCertPathPtr, err)
 	}
 
-	topicList := logtalez.MakeList(*topicPtr)
-	endpointList := logtalez.MakeList(*endpointsPtr)
+	topicList := make([]string, 0)
+	for _, t := range strings.Split(*topicsPtr, ",") {
+		topicList = append(topicList, t)
+	}
+
+	endpointList := make([]string, 0)
+	for _, e := range strings.Split(*endpointsPtr, ",") {
+		endpointList = append(endpointList, e)
+	}
 
 	lt, err := logtalez.New(endpointList, topicList, *serverCertPathPtr, *clientCertPathPtr)
 	if err != nil {
