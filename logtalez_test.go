@@ -9,41 +9,6 @@ import (
 	"github.com/zeromq/goczmq"
 )
 
-func TestMakeTopicList(t *testing.T) {
-	hosts := "host1,host2"
-	programs := "program1,program2"
-	topics := MakeTopicList(hosts, programs)
-
-	expected := []string{
-		"host1.program1",
-		"host1.program2",
-		"host2.program1",
-		"host2.program2",
-	}
-
-	for i, expect := range expected {
-		if topics[i] != expect {
-			t.Errorf("expected topic '%s', got '%s'", expect[i], topics[i])
-		}
-	}
-}
-
-func TestMakeEndpointList(t *testing.T) {
-	conns := "tcp://incproc1,tcp://inproc2"
-	endpoints := MakeEndpointList(conns)
-
-	expected := []string{
-		"tcp://incproc1",
-		"tcp://inproc2",
-	}
-
-	for i, expect := range expected {
-		if endpoints[i] != expect {
-			t.Errorf("expected endpoint '%s', got '%s'", expect[i], endpoints[i])
-		}
-	}
-}
-
 func TestNew(t *testing.T) {
 	endpoints := []string{"inproc://test1"}
 	topics := []string{"topic1", "topic2"}

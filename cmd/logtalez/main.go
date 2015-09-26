@@ -14,8 +14,7 @@ import (
 func main() {
 
 	endpointsPtr := flag.String("endpoints", "", "comma delimited list of zeromq endpoints")
-	hostsPtr := flag.String("hosts", "", "comma delimited list of hostnames to get logs from")
-	programsPtr := flag.String("programs", "", "comma delimited list of programs to get logs from")
+	topicsPtr := flag.String("topics", "", "comma delimited list of topics to subscribe to")
 	serverCertPathPtr := flag.String("servercertpath", "", "path to server public cert")
 	clientCertPathPtr := flag.String("clientcertpath", "", "path to client public cert")
 	jSONPtr := flag.Bool("json", false, "restrict output to valid JSON")
@@ -42,8 +41,8 @@ func main() {
 		log.Fatalf("error reading client certificate %q: %s", *clientCertPathPtr, err)
 	}
 
-	topicList := logtalez.MakeTopicList(*hostsPtr, *programsPtr)
-	endpointList := logtalez.MakeEndpointList(*endpointsPtr)
+	topicList := logtalez.MakeList(*topicPtr)
+	endpointList := logtalez.MakeList(*endpointsPtr)
 
 	lt, err := logtalez.New(endpointList, topicList, *serverCertPathPtr, *clientCertPathPtr)
 	if err != nil {
