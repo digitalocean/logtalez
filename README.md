@@ -161,12 +161,8 @@ if $parsesuccess == "OK" then {
 	import "github.com/digitalocean/logtalez"
 
 	func main() {
-		zmqconns := "tcp://127.0.0.1:24444,tcp://example.com:24444"
-		endpoints := logtalez.MakeEndpointList(zmqconns)
-
-		hosts := "host1,host2,host3"
-		programs := "nginx"
-		topics := logtalez.MakeTopicList(hosts, programs)
+		endpoints := []string{"tcp://127.0.0.1:24444,tcp://example.com:24444"}
+		topics = []string{"host1.nginx","host2.nginx","host3.nginx"}
 
 		serverCert := "/home/me/.curve/server_public_cert"
 		clientCert := "/home/me/.curve/client_public_cert"

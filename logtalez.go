@@ -1,11 +1,6 @@
 package logtalez
 
-import (
-	"fmt"
-	"strings"
-
-	"github.com/zeromq/goczmq"
-)
+import "github.com/zeromq/goczmq"
 
 // LogTalez holds the context for a running LogTalez instance
 type LogTalez struct {
@@ -14,41 +9,6 @@ type LogTalez struct {
 	serverCert *goczmq.Cert
 	clientCert *goczmq.Cert
 	sock       *goczmq.Sock
-}
-
-// MakeTopicList is a convenience function that, given a string of comma delimited
-// hosts and a string of comma delimited program name tags, generates a slice of
-// subscription topics.
-func MakeTopicList(hosts, programs string) []string {
-	topicList := make([]string, 0)
-
-	if hosts != "" {
-		for _, h := range strings.Split(hosts, ",") {
-			if programs != "" {
-				for _, p := range strings.Split(programs, ",") {
-					topicList = append(topicList, fmt.Sprintf("%s.%s", h, p))
-				}
-			} else {
-				topicList = append(topicList, h)
-			}
-		}
-	} else {
-		topicList = append(topicList, "")
-	}
-
-	return topicList
-}
-
-// MakeEndpointList is a convenience function that, given a list of comma delimited
-// zeromq endpoints, returns a slice containing the endpoints.
-func MakeEndpointList(endpoints string) []string {
-	endpointList := make([]string, 0)
-
-	for _, e := range strings.Split(endpoints, ",") {
-		endpointList = append(endpointList, e)
-	}
-
-	return endpointList
 }
 
 // New returns a new running LogTalez instance given a slice of endpoints,
