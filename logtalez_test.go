@@ -47,7 +47,7 @@ func TestNew(t *testing.T) {
 
 	lt, err := New(endpoints, topics, servercert, clientcert)
 	if err != nil {
-		t.Error("NewLogTalez failed: %s", err)
+		t.Errorf("NewLogTalez failed: %s", err)
 	}
 
 	server.SendFrame([]byte("topic1:hello world"), 0)
