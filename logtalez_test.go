@@ -6,7 +6,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/zeromq/goczmq"
+	"gopkg.in/zeromq/goczmq.v1"
 )
 
 func TestNew(t *testing.T) {

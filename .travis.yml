@@ -13,7 +13,7 @@ install:
         - git clone git://github.com/zeromq/czmq.git
         - ( cd czmq; ./autogen.sh; ./configure; make check; sudo make install; sudo ldconfig )
         
-        - go get github.com/zeromq/goczmq
+        - go get gopkg.in/zeromq/goczmq.v1
 
 script:
         - go test -v ./...

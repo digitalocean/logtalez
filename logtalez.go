@@ -1,6 +1,6 @@
 package logtalez
 
-import "github.com/zeromq/goczmq"
+import "gopkg.in/zeromq/goczmq.v1"
 
 // LogTalez holds the context for a running LogTalez instance
 type LogTalez struct {
