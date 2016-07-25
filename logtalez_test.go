@@ -73,6 +73,18 @@ func TestNew(t *testing.T) {
 	if string(buf[:n]) != "topic2:hello again" {
 		t.Errorf("expected 'topic2:hello again', got '%s'", buf[:n])
 	}
+
+	lt.SetTopicDelimiter(":")
+	server.SendFrame([]byte("topic1:hello hello"), 0)
+	n, err = lt.Read(buf)
+	if err != nil {
+		t.Errorf("expected nil, got %s", err)
+	}
+
+	if string(buf[:n]) != "hello hello" {
+		t.Errorf("expected 'hello hello', got '%s'", buf[:n])
+	}
+
 }
 
 func ExampleLogTalez() {

@@ -4,11 +4,12 @@ import "gopkg.in/zeromq/goczmq.v1"
 
 // LogTalez holds the context for a running LogTalez instance
 type LogTalez struct {
-	topics     []string
-	endpoints  []string
-	serverCert *goczmq.Cert
-	clientCert *goczmq.Cert
-	sock       *goczmq.Sock
+	topics         []string
+	endpoints      []string
+	serverCert     *goczmq.Cert
+	clientCert     *goczmq.Cert
+	sock           *goczmq.Sock
+	topicDelimiter string
 }
 
 // New returns a new running LogTalez instance given a slice of endpoints,
@@ -55,8 +56,39 @@ func New(endpoints, topics []string, serverCertPath, clientCertPath string) (*Lo
 	return lt, nil
 }
 
+func (lt *LogTalez) SetTopicDelimiter(delim string) {
+	lt.topicDelimiter = delim
+}
+
 func (lt *LogTalez) Read(p []byte) (int, error) {
-	return lt.sock.Read(p)
+	b, flag, err := lt.sock.RecvFrame()
+	if err != nil {
+		return 0, err
+	}
+
+	for flag == goczmq.FlagMore {
+		b, flag, err = lt.sock.RecvFrame()
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	cur := 0
+	if lt.topicDelimiter != "" {
+		if cur == len(b) {
+			goto exitDelimSearch
+		}
+		for string(b[cur]) != lt.topicDelimiter {
+			cur++
+			if cur == len(b) {
+				goto exitDelimSearch
+			}
+		}
+		cur++
+	}
+exitDelimSearch:
+	copy(p[:], b[cur:])
+	return len(b[cur:]), err
 }
 
 // Destroy gracefully shuts down a running LogTalez instance
