@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"gopkg.in/zeromq/goczmq.v1"
+	"gopkg.in/zeromq/goczmq.v4"
 )
 
 func main() {
