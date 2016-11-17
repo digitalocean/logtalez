@@ -18,77 +18,27 @@ logtalez - a library and command line client for subscribing to log streams from
 ## Installation
 ### Dependencies
 #### [libsodium](https://github.com/jedisct1/libsodium)
-Version: 1.0.2 (or newer)
+Version: 1.0.11 (or newer)
 
 Sodium is a "new, easy-to-use software library for encryption, decryption, signatures, password hashing and more".  ZeroMQ uses sodium for the basis of the CurveZMQ security protocol.
 
-```
-git clone git@github.com:jedisct1/libsodium.git
-cd libsodium
-./autogen.sh; ./configure; make; make check
-sudo make install
-sudo ldconfig
-```
-
 #### [ZeroMQ](http://zeromq.org/) 
-Version: commit 6b4d9bca0c31fc8131749396fd996d17761c999f or newer
+Version: 4.2.0 (or newer)
 
 ZeroMQ is an embeddable [ZMTP](http://rfc.zeromq.org/spec:23) protocol library.
 
-```
-wget http://download.zeromq.org/zeromq-4.1.2.tar.gz
-md5sum zeromq-4.1.2.tar.gz
-159c0c56a895472f02668e692d122685  zeromq-4.1.2.tar.gz
-cd zeromq-4.1.2
-./configure --with-libsodium; make; make check
-sudo make install
-sudo ldconfig
-```
-
 #### [CZMQ](http://czmq.zeromq.org/)
-Version: commit 7997d86bcac7a916535338e71f2d826a9913df28 or newer
+Version: 4.0.1 (or newer)
 
 CZMQ is a high-level C binding for ZeroMQ.  It provides an API for various services on top of ZeroMQ such as authentication, actors, service discovery, etc.
 
-```
-wget https://github.com/zeromq/czmq/archive/v3.0.2.tar.gz -O czmq-3.0.2.tar.gz
-tar zxvf czmq-3.0.2.tar.gz
-md5sum czmq-3.0.2.tar.gz 
-23e9885f7ee3ce88d99d0425f52e9be1  czmq-3.0.2.tar.gz
-cd czmq-3.0.2
-./configure; make; make check
-sudo make install
-```
-
 #### [GoCZMQ](http://https://github.com/zeromq/goczmq)
-Version: commit 6b4d9bca0c31fc8131749396fd996d17761c999f or newer
-
 GoCZMQ is a Go interface to the CZMQ API.
-
-```
-mkdir -p  $GOPATH/go/src/github.com/zeromq
-cd $GOPATH/go/src/github.com/zeromq
-git clone git@github.com:zeromq/goczmq.git
-cd goczmq
-go test
-go build; go install
-```
-
 
 #### [Rsyslog](http://www.rsyslog.com/)
 Version: 8.9.0 or newer
 
 Rsyslog is the "rocket fast system for log processing".
-
-Build dependencies:
-* libsodium
-* libzmq
-* czmq
-* libjson-c
-* libestr
-* liblognorm
-* liblogging
-
 You will need to use the "--enable-omczmq" configure flag to build zeromq + curve support.
 
 ### Generating Certificates
