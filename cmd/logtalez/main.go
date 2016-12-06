@@ -37,8 +37,10 @@ func main() {
 		log.Fatalf("error reading server certificate %q: %s", *serverCertPathPtr, err)
 	}
 
-	if _, err := os.Stat(*clientCertPathPtr); err != nil {
-		log.Fatalf("error reading client certificate %q: %s", *clientCertPathPtr, err)
+	if *clientCertPathPtr != "*" {
+		if _, err := os.Stat(*clientCertPathPtr); err != nil {
+			log.Fatalf("error reading client certificate %q: %s", *clientCertPathPtr, err)
+		}
 	}
 
 	topicList := make([]string, 0)

@@ -30,9 +30,13 @@ func New(endpoints, topics []string, serverCertPath, clientCertPath string) (*Lo
 		return lt, err
 	}
 
-	lt.clientCert, err = goczmq.NewCertFromFile(clientCertPath)
-	if err != nil {
-		return lt, err
+	if clientCertPath == "*" {
+		lt.clientCert = goczmq.NewCert()
+	} else {
+		lt.clientCert, err = goczmq.NewCertFromFile(clientCertPath)
+		if err != nil {
+			return lt, err
+		}
 	}
 
 	lt.sock = goczmq.NewSock(goczmq.Sub)
